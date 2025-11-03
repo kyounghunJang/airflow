@@ -72,3 +72,15 @@ class FABAuthManagerRoles:
             )
 
         return RoleResponse.model_validate(created)
+
+    @classmethod
+    def delete_role(cls, name: str) -> None:
+        security_manager = get_fab_auth_manager().security_manager
+
+        existing = security_manager.find_role(name=name)
+        if not existing:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Role with name {name!r} does not exist.",
+            )
+        security_manager.delete_role(existing)
